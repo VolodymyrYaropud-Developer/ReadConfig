@@ -7,45 +7,62 @@ namespace ReadConfig
     {
         public string ConnectionString { get; set; }
         public string? Param1 { get; set; }
-        public bool Param2 { get; set; }
+        public bool? Param2 { get; set; }
+
+        public override string ToString()
+        {
+            return $"ConnectionString: {ConnectionString}\n" +
+                $"Param1: {Param1}\n" +
+                $"Param2: {Param2}\n";
+        }
     }
 
     public class ConfigReader
     {
-        private readonly string _configFilePath;
-        public DatabaseConfig Config { get; private set; }
-
-        public ConfigReader(string configFilePath)
+        public DatabaseConfig LoadConfig(string configFilePath)
         {
-            _configFilePath = configFilePath;
-        }
+            DatabaseConfig config = null;
 
-        public void LoadConfig()
-        {
+            if (string.IsNullOrEmpty(configFilePath))
+            {
+
+                Console.WriteLine("File path is uncorrect");
+                return config;
+            }
+
+            if (!File.Exists(configFilePath))
+            {
+                Console.WriteLine("File doesn`t exist");
+                return config;
+            }
+
+            string jsonContent = File.ReadAllText(configFilePath);
+            if (string.IsNullOrEmpty(jsonContent))
+            {
+                Console.WriteLine("File data is empty");
+                return config;
+            }
             try
             {
-                string jsonContent = File.ReadAllText(_configFilePath);
-                Config = JsonSerializer.Deserialize<DatabaseConfig>(jsonContent);
+                config = JsonSerializer.Deserialize<DatabaseConfig>(jsonContent);
 
-                if (Config == null)
+                if (string.IsNullOrEmpty(config.ConnectionString))
                 {
-                    throw new ArgumentNullException(nameof(Config), "Configuration is null or malformed.");
+                    Console.WriteLine("Connection string is empty");
+                    return null;
                 }
 
-                if (string.IsNullOrEmpty(Config.ConnectionString))
+                if (config.Param2 is null)
                 {
-                    throw new Exception("ConnectionString is required in the config.");
+                    Console.WriteLine("Param2 is required");
+                    return null;
                 }
-
-                if (!Config.Param2)
-                {
-                    throw new Exception("Param2 is a required boolean parameter.");
-                }
+                return config;
             }
-            catch (Exception ex)
+            catch (Exception ex) 
             {
-                Console.WriteLine($"Error loading configuration: {ex.Message}");
-                throw;
+                Console.WriteLine("Error occured while parsing data " + ex.Message);
+                return config;
             }
         }
     }

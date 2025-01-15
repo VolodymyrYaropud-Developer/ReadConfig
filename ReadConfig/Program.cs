@@ -2,5 +2,6 @@
 
 using ReadConfig;
 
-var config = new ConfigReader(@"C:\Users\brati\source\repos\ReadConfig\ReadConfig\config.json");
-config.LoadConfig();
+var config = new ConfigReader();
+var data = config.LoadConfig(@"config.json");
+Console.WriteLine(data?.ToString());
