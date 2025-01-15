@@ -1,0 +1,5 @@
+{
+  "ConnectionString": "Server=myServerAddress;Database=myDataBase;User Id=myUsername;Password=myPassword;",
+  "Param1": "Optional parameter value",
+  "Param2": true
+}
