@@ -59,9 +59,9 @@ namespace ReadConfig
                 }
                 return config;
             }
-            catch (Exception ex) 
+            catch (Exception) 
             {
-                Console.WriteLine("Error occured while parsing data " + ex.Message);
+                Console.WriteLine("Error occurred while parsing data. Please check the configuration file and ensure all required fields are present and correctly formatted.");
                 return config;
             }
         }
